@@ -1,0 +1,677 @@
+:root {
+    /* North Pole Night Gradient */
+    --bg-gradient: radial-gradient(circle at 50% 0%, #0d1e2d 0%, #020508 100%);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+    --primary-gold: #F1D570;
+    --primary-red: #D42426;
+    --pencil-graphite: #383838;
+    /* New pencil color */
+    --deep-green: #2F5233;
+    --text-light: #DEE4E7;
+    --text-muted: #8FA6B2;
+
+    --font-heading: 'Great Vibes', cursive;
+    --font-body: 'Outfit', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-gradient);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+#snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Glassmorphism Container */
+.glass-container {
+    position: relative;
+    z-index: 10;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    /* More blur */
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    padding: 3rem;
+    width: 100%;
+    max-width: 550px;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+h1 {
+    font-family: var(--font-heading);
+    color: var(--primary-gold);
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(241, 213, 112, 0.4);
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    font-weight: 300;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 12px;
+}
+
+#newItemInput {
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#newItemInput:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(241, 213, 112, 0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-gold), #b39025);
+    color: #0d1e2d;
+    border: none;
+    border-radius: 12px;
+    width: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(241, 213, 112, 0.3);
+}
+
+.file-upload-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border-color: var(--text-muted);
+}
+
+/* Checklist */
+.checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checklist-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.checklist-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.checklist-item.completed {
+    opacity: 0.7;
+    background: transparent;
+}
+
+.custom-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--text-muted);
+    border-radius: 6px;
+    margin-right: 15px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tick {
+    color: var(--primary-gold);
+    font-size: 1.2rem;
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.checklist-item.completed .custom-checkbox {
+    border-color: var(--primary-gold);
+    background: rgba(241, 213, 112, 0.1);
+}
+
+.checklist-item.completed .tick {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Text & Stroke */
+.checklist-item-text {
+    flex-grow: 1;
+    font-size: 1.05rem;
+    position: relative;
+    padding: 2px 0;
+}
+
+/* REALISTIC SVG STROKE */
+.strikethrough-svg {
+    position: absolute;
+    top: 50%;
+    left: -5%;
+    width: 110%;
+    height: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    overflow: visible;
+}
+
+.strikethrough-path {
+    fill: none;
+    stroke: var(--pencil-graphite);
+    /* CHANGED: Graphite */
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    /* Long enough to cover path */
+    stroke-dashoffset: 1000;
+    /* Hidden initially */
+    transition: stroke-dashoffset 0.6s ease-out;
+    /* The drawing action */
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.checklist-item.completed .strikethrough-path {
+    stroke-dashoffset: 0;
+    /* Draw it */
+}
+
+/* Delete Button */
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.checklist-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.delete-btn:hover {
+    color: var(--primary-red);
+}
+
+/* Animations */
+.checklist-item.fade-out {
+    opacity: 0;
+    transform: translateX(50px) scale(0.9);
+}
+
+footer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1rem;
+    text-align: center;
+}
+
+.disclaimer {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    opacity: 0.7;
+    line-height: 1.4;
+}
+
+/* End Game Overlay */
+#endGameOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(13, 30, 45, 0.98), #000);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+}
+
+#endGameOverlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.celebration-content {
+    text-align: center;
+}
+
+.tree-container {
+    position: relative;
+    width: 300px;
+    height: 350px;
+    margin: 0 auto 1rem auto;
+}
+
+.tree {
+    font-size: 10rem;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 30px rgba(241, 213, 112, 0.4));
+    opacity: 0;
+    transform: translateY(-200px);
+}
+
+/* Better Tree Bounce Animation setup in JS or keyframes here */
+.tree.animate {
+    animation: treeDrop 1.2s cubic-bezier(0.25, 1.5, 0.5, 1) forwards;
+}
+
+.tree.pulse {
+    opacity: 1;
+    /* Ensure it stays visible */
+    transform: translateY(0) scale(1);
+    /* Lock position */
+    animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes treeDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-500px) scale(0.5);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(20px) scale(1.1);
+    }
+
+    80% {
+        transform: translateY(-10px) scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes glowPulse {
+    from {
+        filter: drop-shadow(0 0 20px rgba(241, 213, 112, 0.3));
+    }
+
+    to {
+        filter: drop-shadow(0 0 50px rgba(241, 213, 112, 0.8));
+    }
+}
+
+.gifts-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    /* Space for gifts */
+    z-index: 3;
+    display: flex;
+    /* Helps centering if needed, though we use abs pos on children */
+    pointer-events: none;
+}
+
+.gift {
+    position: absolute;
+    font-size: 3.5rem;
+    bottom: 20px;
+    /* Aligned with tree bottom */
+    z-index: 3;
+    opacity: 0;
+}
+
+.gift.pop {
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.5) forwards;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0) translateY(50px) rotate(0deg);
+    }
+
+    70% {
+        transform: scale(1.1) translateY(-10px) rotate(5deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(var(--rot));
+    }
+}
+
+/* Sparkle Animation for End Game */
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #FFF;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 10px #FFF;
+    animation: twinkle 1.5s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+}
+
+.completion-message {
+    font-family: var(--font-heading);
+    color: var(--primary-gold);
+    font-size: 4.5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease 1s;
+    /* Delay until tree lands */
+    text-shadow: 0 0 20px rgba(241, 213, 112, 0.3);
+}
+
+.completion-sub {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    opacity: 0;
+    transition: all 1s ease 1.5s;
+}
+
+#endGameOverlay.visible .completion-message,
+#endGameOverlay.visible .completion-sub {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Info Button */
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(77, 171, 247, 0.5);
+    /* Blue tint */
+    background: rgba(77, 171, 247, 0.1);
+    color: #4dabf7;
+    font-family: 'Times New Roman', serif;
+    /* Classic serif 'i' */
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-style: italic;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(77, 171, 247, 0.1);
+}
+
+.btn-icon:hover {
+    background: rgba(77, 171, 247, 0.2);
+    border-color: #4dabf7;
+    box-shadow: 0 0 15px rgba(77, 171, 247, 0.4);
+    transform: scale(1.05);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal .glass-container {
+    max-width: 500px;
+    padding: 2.5rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal.visible .glass-container {
+    transform: translateY(0);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: var(--primary-red);
+}
+
+.modal h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-gold);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-section {
+    margin-bottom: 1.5rem;
+}
+
+.modal-section h3 {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 5px;
+}
+
+.modal-section p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+}
+
+.example-block {
+    display: block;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.privacy-tip {
+    background: rgba(241, 133, 112, 0.1);
+    /* Subtle red tint */
+    border: 1px solid rgba(241, 213, 112, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bad,
+.good {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bad {
+    background: rgba(212, 36, 38, 0.1);
+    color: #ffcccc;
+}
+
+.good {
+    background: rgba(47, 82, 51, 0.3);
+    color: #ccffcc;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .glass-container {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 3.5rem;
+    }
+
+    .checklist-item {
+        padding: 12px;
+    }
+
+    .modal .glass-container {
+        margin: 20px;
+        padding: 1.5rem;
+    }
+}

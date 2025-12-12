@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Checklist</title>
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <canvas id="snowCanvas"></canvas>
+
+    <div class="glass-container">
+        <header>
+            <h1>Vacation Ready</h1>
+            <p class="subtitle">Wrap up your tasks before the sleigh bells ring</p>
+        </header>
+
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="newItemInput" placeholder="Add a custom task..." aria-label="New task">
+                <button id="addItemBtn" class="btn-primary" aria-label="Add task">
+                    <span class="icon">+</span>
+                </button>
+            </div>
+
+            <div class="file-upload-wrapper">
+                <input type="file" id="fileInput" accept=".txt" class="hidden-input">
+                <label for="fileInput" class="btn-secondary">
+                    <span class="icon">📂</span> Load List from File
+                </label>
+                <button id="infoBtn" class="btn-icon" aria-label="Help & Information">
+                    i
+                </button>
+            </div>
+        </div>
+
+        <ul id="checklist" class="checklist">
+            <!-- Checklist items will be populated here -->
+        </ul>
+
+        <footer>
+            <p class="disclaimer">🔒 The application doesn't collect or store any data. All your data remains on your
+                machine and gets
+                removed from the application as you leave the page!</p>
+        </footer>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal hidden">
+        <div class="modal-content glass-container">
+            <button id="closeModalBtn" class="close-modal">×</button>
+            <h2>File Format & Privacy</h2>
+
+            <div class="modal-section">
+                <h3>📁 File Format</h3>
+                <p>Please use a simple <strong>.txt</strong> file with one task per line.</p>
+                <code class="example-block">
+                    Buy eggnog<br>
+                    Wrap presents<br>
+                    Send holiday cards
+                </code>
+            </div>
+
+            <div class="modal-section">
+                <h3>🔒 Privacy & Security</h3>
+                <p>Your checklist is processed entirely in your browser. <strong>No data is sent to any server.</strong>
+                    However, sharing files with any app requires caution.</p>
+
+                <div class="privacy-tip">
+                    <span class="tip-icon">💡</span>
+                    <p><strong>Pro Tip:</strong> De-personalize your data before loading it!</p>
+                </div>
+
+                <div class="comparison">
+                    <div class="bad">
+                        <span class="cross">❌</span>
+                        "Email Dave Smith about Project X"
+                    </div>
+                    <div class="good">
+                        <span class="check">✅</span>
+                        "Email Manager about Project Launch"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="endGameOverlay" class="hidden">
+        <div class="celebration-content">
+            <div class="tree-container">
+                <div class="tree">🎄</div>
+                <div class="sparkles"></div>
+                <div class="gifts-container"></div> <!-- New container for gifts -->
+            </div>
+            <h2 class="completion-message">You've finished everything!</h2>
+            <p class="completion-sub">Enjoy your well-deserved break.<br>Merry Christmas!</p>
+            <button id="startOverBtn" class="btn-primary" style="margin: 2rem auto; width: auto; padding: 10px 30px; font-size: 1.2rem;">Start Over ↺</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
