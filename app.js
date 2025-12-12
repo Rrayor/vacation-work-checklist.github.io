@@ -307,20 +307,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const particles = [];
-        for (let i = 0; i < 200; i++) { // More snow
-            particles.push(createSnowFlake(width, height));
+        const snowCount = 200;
+        const sparkleCount = 30;
+
+        // Initialize Snow
+        for (let i = 0; i < snowCount; i++) {
+            particles.push(createParticle(width, height, 'snow'));
+        }
+        // Initialize Sparkles
+        for (let i = 0; i < sparkleCount; i++) {
+            particles.push(createParticle(width, height, 'sparkle'));
         }
 
-        function createSnowFlake(w, h, startTop = false) {
-            return {
+        function createParticle(w, h, type, startTop = false) {
+            const p = {
+                type: type,
                 x: Math.random() * w,
                 y: startTop ? -10 : Math.random() * h,
-                r: Math.random() * 4 + 2, // Larger, fluffier
-                d: Math.random() * 1.5 + 0.5,
-                opacity: Math.random() * 0.5 + 0.3,
-                sway: Math.random() * 0.05 - 0.025,
-                swayParam: Math.random() * Math.PI * 2
             };
+
+            if (type === 'snow') {
+                p.r = Math.random() * 4 + 2; // Fluffy
+                p.d = Math.random() * 1.5 + 0.5; // Fall speed
+                p.opacity = Math.random() * 0.5 + 0.3;
+                p.sway = Math.random() * 0.05 - 0.025;
+                p.swayParam = Math.random() * Math.PI * 2;
+            } else if (type === 'sparkle') {
+                p.r = Math.random() * 1.5 + 0.5; // Tiny sharp point
+                p.d = Math.random() * 1.0 + 0.2; // Fall slower
+                p.opacity = Math.random(); // Initial random opacity
+                p.twinkleSpeed = Math.random() * 0.05 + 0.02;
+            }
+
+            return p;
         }
 
         function draw() {
@@ -329,14 +348,29 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
                 ctx.beginPath();
-                // Fluffy gradient
-                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-                grad.addColorStop(0, `rgba(255, 255, 255, ${p.opacity})`);
-                grad.addColorStop(1, "rgba(255, 255, 255, 0)");
 
-                ctx.fillStyle = grad;
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-                ctx.fill();
+                if (p.type === 'snow') {
+                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+                    grad.addColorStop(0, `rgba(255, 255, 255, ${p.opacity})`);
+                    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+                    ctx.fillStyle = grad;
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+                    ctx.fill();
+                } else if (p.type === 'sparkle') {
+                    // Update twinkle
+                    p.opacity += p.twinkleSpeed;
+                    if (p.opacity > 1 || p.opacity < 0) {
+                        p.twinkleSpeed = -p.twinkleSpeed;
+                    }
+                    const visOpacity = Math.max(0, Math.min(1, p.opacity));
+
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = "white";
+                    ctx.fillStyle = `rgba(255, 255, 255, ${visOpacity})`;
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+                    ctx.fill();
+                    ctx.shadowBlur = 0; // Reset
+                }
             }
             update();
             requestAnimationFrame(draw);
@@ -346,11 +380,16 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
                 p.y += p.d;
-                p.swayParam += 0.02;
-                p.x += Math.sin(p.swayParam) * 0.8;
+
+                if (p.type === 'snow') {
+                    p.swayParam += 0.02;
+                    p.x += Math.sin(p.swayParam) * 0.8;
+                }
+                // Sparkles fall straight or drift very slightly (optional), here straight for contrast
 
                 if (p.y > height) {
-                    Object.assign(p, createSnowFlake(width, height, true));
+                    // Respawn
+                    Object.assign(p, createParticle(width, height, p.type, true));
                 }
                 if (p.x > width) p.x = 0;
                 if (p.x < 0) p.x = width;
