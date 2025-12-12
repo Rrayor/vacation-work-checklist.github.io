@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     // State
-    let items = [
-        { id: 1, text: "Leave detailed status reports on all in-progress tickets", completed: false },
-        { id: 2, text: "Notify relevant stakeholders about your absence", completed: false },
-        { id: 3, text: "Set out-of-office messages in email and chat apps", completed: false },
-        { id: 4, text: "Run system updates on your machine", completed: false },
-        { id: 5, text: "Take a moment to reflect on your accomplishments this year", completed: false }
-    ];
+    // State
+    function getDefaultItems() {
+        return [
+            { id: 1, text: "Leave detailed status reports on all in-progress tickets", completed: false },
+            { id: 2, text: "Notify relevant stakeholders about your absence", completed: false },
+            { id: 3, text: "Set out-of-office messages in email and chat apps", completed: false },
+            { id: 4, text: "Run system updates on your machine", completed: false },
+            { id: 5, text: "Take a moment to reflect on your accomplishments this year", completed: false }
+        ];
+    }
+
+    let items = getDefaultItems();
 
     // DOM Elements
     const checklistEl = document.getElementById('checklist');
@@ -439,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetGame() {
         // Reset Logic
-        items = [];
+        items = getDefaultItems();
         render(); // This clears the list
 
         // Hide Overlay
